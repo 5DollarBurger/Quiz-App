@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+// Defines question attributes
 data class Question (
     val id : Int,
     val question : String,

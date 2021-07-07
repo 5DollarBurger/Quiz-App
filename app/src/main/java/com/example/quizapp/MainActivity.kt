@@ -13,17 +13,21 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    // Executed when app starts
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        // Hide UI
         window?.decorView?.apply {systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN}
 
+        // Set up interaction to move on to question activity
         binding.btnStart.setOnClickListener {
             if (binding.etName.text.toString().isEmpty()) {
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
             } else {
+                // Move on to next activity
                 val intent = Intent(this,QuizQuestionsActivity::class.java)
                 startActivity(intent)
                 finish()
