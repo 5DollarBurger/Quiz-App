@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var mCurrentPosition : Int = 1
     private var mQuestionList : ArrayList<Question>? = null // global variable
     private var mSelectedOption : Int? = null
+    private var mCorrectAnswers : Int = 0
+    private var mUserName : String? = null
+    private var mCheckSelected : Boolean = false
 
     // Executed with activity starts
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +31,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityQuizQuestionsBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        mUserName = intent.getStringExtra(Constants.USER_NAME)
         mQuestionList = Constants.getQuestions()
 //        Log.i("Questions Size","${questionList.size}")
 
@@ -40,8 +45,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setQuestion() {
-
-        val question = mQuestionList!![mCurrentPosition - 1]
+        mCheckSelected = false
+        val question = mQuestionList!![mCurrentPosition-1]
 
         // Reset all options to unselected state
         defaultOptionsView()
@@ -84,26 +89,35 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.tvOption1 -> selectedOptionView(binding.tvOption1,1)
-            R.id.tvOption2 -> selectedOptionView(binding.tvOption2,2)
-            R.id.tvOption3 -> selectedOptionView(binding.tvOption3,3)
-            R.id.tvOption4 -> selectedOptionView(binding.tvOption4,4)
+            R.id.tvOption1 -> if (!mCheckSelected) selectedOptionView(binding.tvOption1,1)
+            R.id.tvOption2 -> if (!mCheckSelected) selectedOptionView(binding.tvOption2,2)
+            R.id.tvOption3 -> if (!mCheckSelected) selectedOptionView(binding.tvOption3,3)
+            R.id.tvOption4 -> if (!mCheckSelected) selectedOptionView(binding.tvOption4,4)
             R.id.btnSubmit -> {
                 if (mSelectedOption == null) { // No option selected
                     mCurrentPosition++
                     when {
                         mCurrentPosition <= mQuestionList!!.size -> setQuestion()
-                        else -> Toast.makeText(
-                            this,
-                            "You have completed the quiz",
-                            Toast.LENGTH_SHORT).show()
+                        else -> {
+                            // Move on to result screen
+                            val intent = Intent(this, ResultActivity::class.java)
+                            // Send required data over to result screen
+                            intent.putExtra(Constants.USER_NAME, mUserName)
+                            intent.putExtra(Constants.SCORE, mCorrectAnswers)
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionList!!.size)
+                            startActivity(intent)
+                            finish() // Prevent back from result screen
+                        }
                     }
                 } else { // Option selected
                     val question = mQuestionList?.get(mCurrentPosition-1)
                     if (question!!.answer != mSelectedOption) {
                         answerView(mSelectedOption!!, R.drawable.wrong_option_border_bg)
+                    } else {
+                        mCorrectAnswers++
                     }
                     answerView(question!!.answer,R.drawable.correct_option_border_bg)
+                    mCheckSelected = true
 
                     if (mCurrentPosition == mQuestionList!!.size) {
                         binding.btnSubmit.text = "FINISH"

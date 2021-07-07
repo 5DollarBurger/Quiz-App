@@ -1,6 +1,12 @@
 package com.example.quizapp
 
+// Storage of question data
 object Constants {
+
+    const val USER_NAME : String = "user_name"
+    const val TOTAL_QUESTIONS : String = "total_questions"
+    const val SCORE : String = "score"
+
     fun getQuestions() : ArrayList<Question> {
         val questionList = ArrayList<Question>()
         // 1

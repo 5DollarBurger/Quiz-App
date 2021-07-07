@@ -10,10 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuizApp">
         <activity
+            android:name=".ResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBarTheme"></activity>
+        <activity
             android:name=".QuizQuestionsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBarTheme">
-        </activity>
+            android:theme="@style/NoActionBarTheme"></activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

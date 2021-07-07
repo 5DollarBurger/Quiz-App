@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // Move on to next activity
                 val intent = Intent(this,QuizQuestionsActivity::class.java)
+                // Move user name data to next activity
+                intent.putExtra(Constants.USER_NAME,binding.etName.text.toString())
                 startActivity(intent)
                 finish()
             }
